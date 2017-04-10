@@ -20,4 +20,10 @@ describe('Math expression', () => {
 		assert.equal(evaluate('2 * (3 + 1)'), 8);
 		assert.equal(evaluate('(3 * (1+2)) * 2'), 18);
 	});
+
+	it('parsing error', () => {
+		assert.throws(() => evaluate('a+b'), /Unknown character/);
+		assert.throws(() => evaluate('1/b'), /Unknown character/);
+		assert.throws(() => evaluate('(1 + 3'), /Unmatched/);
+	});
 });
