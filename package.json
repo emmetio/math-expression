@@ -20,5 +20,12 @@
   "dependencies": {
     "@emmetio/stream-reader": "^2.0.1",
     "@emmetio/stream-reader-utils": "^0.1.0"
+  },
+  "devDependencies": {
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.24.1",
+    "babel-register": "^6.24.1",
+    "mocha": "^3.2.0",
+    "rollup": "^0.41.6",
+    "rollup-watch": "^3.2.2"
   }
 }
