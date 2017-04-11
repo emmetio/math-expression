@@ -19,6 +19,7 @@ describe('Math expression', () => {
 	it('parentheses', () => {
 		assert.equal(evaluate('2 * (3 + 1)'), 8);
 		assert.equal(evaluate('(3 * (1+2)) * 2'), 18);
+		assert.equal(evaluate('3 * -(1 + 2)'), -9);
 	});
 
 	it('parsing error', () => {
