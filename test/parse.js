@@ -2,19 +2,38 @@
 
 const assert = require('assert');
 require('babel-register');
-const parser = require('../lib/parser');
+const parser = require('../lib/parser').default;
 
-describe('Reverse parse', () => {
+describe('Backward parse', () => {
 	const stringify = tokens => tokens.map(token => {
-		const value = token.type === 1 ? token.value : String.fromCharCode(token.value);
+		const value = token.type === 'num' ? token.value : String.fromCharCode(token.value);
 		return `${value} [${token.priority}]`;
 	});
-	const parse = expr => stringify(parser.default(expr));
-	const reverse = expr => stringify(parser.reverseParse(expr));
+	const parse = expr => stringify(parser(expr));
+	const reverse = expr => stringify(parser(expr, true));
 
 	it('should equal forward parse', () => {
-		assert.deepEqual(reverse('1 + 2'), parse('1 + 2'));
-		assert.deepEqual(reverse('1 + 2 * 3'), parse('1 + 2 * 3'));
-		assert.deepEqual(reverse('(1 + 2) * 3'), parse('(1 + 2) * 3'));
+		const expressions = [
+			'1+2',
+			'1 + 2',
+			'2 * 3',
+			'2 * 3 + 1',
+			'-2 * 3 + 1',
+			'2 * -3 + 1',
+			'5 / 2',
+			'5 \\ 2',
+			'2 * (3 + 1)',
+			'(3 * (1+2)) * 2',
+			'3 * -(1 + 2)',
+			'(1 + 2) * 3'
+		];
+
+		expressions.forEach(expr => assert.deepEqual(reverse(expr), parse(expr), expr));
+	});
+
+	it('should stop parsing invalid expressions', () => {
+		assert.throws(() => reverse('(1 + 3'), /Unmatched/);
+		assert.throws(() => reverse('a+b'), /Parity/);
+		assert.throws(() => reverse('1/b'), /Parity/);
 	});
 });

@@ -16,12 +16,18 @@ const ops2 = {
 
 /**
  * Evaluates given math expression
- * @param  {String|Array} expr Expression to evaluate
+ * @param  {String|StreamReader|Array} expr Expression to evaluate
+ * @param  {Boolean}                   [backward] Parses given expression (string
+ *                                                or stream) in backward direction
  * @return {Number}
  */
-export default function(expr) {
-	if (typeof expr === 'string') {
-		expr = parse(expr);
+export default function(expr, backward) {
+	if (!Array.isArray(expr)) {
+		expr = parse(expr, backward);
+	}
+
+	if (!expr || !expr.length) {
+		return null;
 	}
 
 	const nstack = [];
