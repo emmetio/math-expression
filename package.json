@@ -1,6 +1,6 @@
 {
   "name": "@emmetio/math-expression",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Parse &amp; evaluate simple math expressions",
   "main": "dist/math.cjs.js",
   "module": "dist/math.es.js",
@@ -8,7 +8,7 @@
     "test": "mocha",
     "build": "rollup -c",
     "watch": "rollup -wc",
-	"prepublish": "npm run test && npm run build"
+    "prepublish": "npm run test && npm run build"
   },
   "repository": {
     "type": "git",
