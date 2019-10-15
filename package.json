@@ -2,34 +2,42 @@
   "name": "@emmetio/math-expression",
   "version": "0.1.1",
   "description": "Parse &amp; evaluate simple math expressions",
-  "main": "dist/math.cjs.js",
-  "module": "dist/math.es.js",
+  "main": "./dist/math.cjs.js",
+  "module": "./dist/math.es.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "test": "mocha",
     "build": "rollup -c",
     "watch": "rollup -wc",
-    "prepublish": "npm run test && npm run build"
+    "lint": "tslint ./src/*.ts",
+    "clean": "rm -rf ./dist",
+    "prepare": "npm test && npm run lint && npm run clean && npm run build"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/emmetio/math-expression.git"
   },
-  "keywords": [],
+  "keywords": ["math", "expression", "evaluate", "emmet"],
   "author": "Sergey Chikuyonok <serge.che@gmail.com>",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/emmetio/math-expression/issues"
   },
   "homepage": "https://github.com/emmetio/math-expression#readme",
-  "dependencies": {
-    "@emmetio/stream-reader": "^2.0.1",
-    "@emmetio/stream-reader-utils": "^0.1.0"
-  },
   "devDependencies": {
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.24.1",
-    "babel-register": "^6.24.1",
-    "mocha": "^3.2.0",
-    "rollup": "^0.41.6",
-    "rollup-watch": "^3.2.2"
+    "@emmetio/scanner": "0.0.7",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^12.7.12",
+    "mocha": "^6.2.1",
+    "rollup": "^1.24.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-typescript2": "^0.24.3",
+    "ts-node": "^8.4.1",
+    "tslint": "^5.20.0",
+    "typescript": "^3.6.4"
+  },
+  "mocha": {
+    "require": "ts-node/register",
+    "spec": "./test/*.ts"
   }
 }
