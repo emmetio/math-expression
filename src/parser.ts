@@ -1,5 +1,4 @@
-import Scanner, { isWhiteSpace } from '@emmetio/scanner';
-import consumeNumber from './number';
+import Scanner, { isWhiteSpace, isNumber } from '@emmetio/scanner';
 
 export const enum TokenType {
     Number = 'num',
@@ -16,6 +15,7 @@ export const enum Operator {
     IntDivide = 92, // \
     LeftParenthesis = 40, // (
     RightParenthesis = 41, // )
+    Dot = 46, // .
 }
 
 const enum ParserState {
@@ -35,14 +35,10 @@ export interface Token {
 
 export const nullary = token(TokenType.Null, 0);
 
-export default function parse(expr: string | Scanner, backward?: boolean) {
-    return backward ? parseBackward(expr) : parseForward(expr);
-}
-
 /**
  * Parses given expression in forward direction
  */
-export function parseForward(expr: string | Scanner): Token[] | null {
+export default function parse(expr: string | Scanner): Token[] | null {
     const scanner = typeof expr === 'string' ? new Scanner(expr) : expr;
     let ch: number;
     let priority = 0;
@@ -110,92 +106,23 @@ export function parseForward(expr: string | Scanner): Token[] | null {
 }
 
 /**
- * Parses given expression in reverse order, e.g. from back to end, and stops when
- * first unknown character was found
+ * Consumes number from given stream
+ * @return Returns `true` if number was consumed
  */
-export function parseBackward(expr: string | Scanner): Token[] | null {
-    let scanner: Scanner;
-    if (typeof expr === 'string') {
-        scanner = new Scanner(expr);
-        scanner.start = scanner.pos = expr.length;
-    } else {
-        scanner = expr;
+function consumeNumber(scanner: Scanner): boolean {
+    const start = scanner.pos;
+    if (scanner.eat(Operator.Dot) && scanner.eatWhile(isNumber)) {
+        // short decimal notation: .025
+        return true;
     }
 
-    let ch: number;
-    let priority = 0;
-    let expected = (ParserState.Primary | ParserState.RParen);
-    const tokens: Token[] = [];
-
-    while (scanner.pos > 0) {
-        if (consumeNumber(scanner, true)) {
-            if ((expected & ParserState.Primary) === 0) {
-                error('Unexpected number', scanner);
-            }
-
-            tokens.push(number(scanner.current()!));
-            expected = (ParserState.Operator | ParserState.Sign | ParserState.LParen);
-
-            // NB should explicitly update stream position for backward direction
-            scanner.pos = scanner.start;
-        } else {
-            scanner.pos--;
-            ch = scanner.peek();
-
-            if (isOperator(ch)) {
-                if (isSign(ch) && (expected & ParserState.Sign) && isReverseSignContext(scanner)) {
-                    if (isNegativeSign(ch)) {
-                        tokens.push(op1(ch, priority));
-                    }
-                    expected = (ParserState.LParen | ParserState.RParen | ParserState.Operator | ParserState.Primary);
-                } else {
-                    if ((expected & ParserState.Operator) === 0) {
-                        scanner.pos++;
-                        break;
-                    }
-                    tokens.push(op2(ch, priority));
-                    expected = (ParserState.Primary | ParserState.RParen);
-                }
-            } else if (ch === Operator.RightParenthesis) {
-                if ((expected & ParserState.RParen) === 0) {
-                    scanner.pos++;
-                    break;
-                }
-
-                priority += 10;
-                expected = (ParserState.Primary | ParserState.RParen | ParserState.LParen);
-            } else if (ch === Operator.LeftParenthesis) {
-                priority -= 10;
-
-                if (expected & ParserState.NullaryCall) {
-                    tokens.push(nullary);
-                } else if ((expected & ParserState.LParen) === 0) {
-                    scanner.next();
-                    break;
-                }
-
-                expected = (ParserState.Operator | ParserState.Sign | ParserState.LParen | ParserState.NullaryCall);
-            } else if (!isWhiteSpace(ch)) {
-                scanner.next();
-                break;
-            }
-        }
+    if (scanner.eatWhile(isNumber) && (!scanner.eat(Operator.Dot) || scanner.eatWhile(isNumber))) {
+        // either integer or decimal: 10, 10.25
+        return true;
     }
 
-    if (priority < 0 || priority >= 10) {
-        error('Unmatched "()"', scanner);
-    }
-
-    const result = orderTokens(tokens.reverse());
-    if (result === null) {
-        error('Parity', scanner);
-    }
-
-    // edge case: expression is preceded by white-space;
-    // move stream position back to expression start
-    scanner.eatWhile(isWhiteSpace);
-
-    return result;
+    scanner.pos = start;
+    return false;
 }
 
 /**
@@ -230,31 +157,6 @@ function orderTokens(tokens: Token[]): Token[] | null {
     return nOperators + 1 === operands.length + operators.length
         ? operands.concat(operators.reverse())
         : null /* parity */;
-}
-
-/**
- * Check if current stream state is in sign (e.g. positive or negative) context
- * for reverse parsing
- */
-function isReverseSignContext(scanner: Scanner): boolean {
-    const start = scanner.pos;
-    let ch: number;
-    let inCtx = true;
-
-    while (scanner.pos > 0) {
-        scanner.pos--;
-        ch = scanner.peek();
-
-        if (isWhiteSpace(ch)) {
-            continue;
-        }
-
-        inCtx = ch === Operator.LeftParenthesis || isOperator(ch);
-        break;
-    }
-
-    scanner.pos = start;
-    return inCtx;
 }
 
 /**
@@ -298,7 +200,7 @@ function error(name: string, scanner?: Scanner) {
     throw new Error(name);
 }
 
-function isSign(ch: number): boolean {
+export function isSign(ch: number): boolean {
     return isPositiveSign(ch) || isNegativeSign(ch);
 }
 
@@ -310,7 +212,7 @@ function isNegativeSign(ch: number) {
     return ch === Operator.Minus;
 }
 
-function isOperator(ch: number): ch is Operator {
+export function isOperator(ch: number): ch is Operator {
     return ch === Operator.Plus || ch === Operator.Minus || ch === Operator.Multiply
         || ch === Operator.Divide || ch === Operator.IntDivide;
 }

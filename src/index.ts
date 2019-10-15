@@ -1,6 +1,8 @@
 import Scanner from '@emmetio/scanner';
 import parse, { TokenType, Operator, Token } from './parser';
 
+export { default as extract, ExtractOptions } from './extract';
+
 type UnaryAction = { [op in Operator]?: (n: number) => number };
 type BinaryAction = { [op in Operator]?: (n1: number, n2: number) => number };
 
@@ -19,11 +21,10 @@ const ops2: BinaryAction = {
 /**
  * Evaluates given math expression
  * @param expr Expression to evaluate
- * @param backward Parses given expression (string or stream) in backward direction
  */
-export default function evaluate(expr: string | Scanner | Token[], backward?: boolean): number | null {
+export default function evaluate(expr: string | Scanner | Token[]): number | null {
     if (!Array.isArray(expr)) {
-        expr = parse(expr, backward)!;
+        expr = parse(expr)!;
     }
 
     if (!expr || !expr.length) {

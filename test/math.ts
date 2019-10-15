@@ -25,9 +25,4 @@ describe('Evaluator', () => {
         throws(() => evaluate('1/b'), /Unknown character/);
         throws(() => evaluate('(1 + 3'), /Unmatched/);
     });
-
-    it('should extract expression from string', () => {
-        equal(evaluate('foo2 * (3 + 1)', true), 8);
-        equal(evaluate('bar.(2 * (3 + 1))', true), 8);
-    });
 });
