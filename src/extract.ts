@@ -66,7 +66,16 @@ export default function extract(text: string, pos = text.length, options?: Parti
         scanner.pos--;
     }
 
-    return scanner.pos !== end && !braces ? [scanner.pos, end] : null;
+    if (scanner.pos !== end && !braces) {
+        // Trim whitespace
+        while (isSpace(cur(scanner))) {
+            scanner.pos++;
+        }
+
+        return [scanner.pos, end];
+    }
+
+    return null;
 }
 
 /**

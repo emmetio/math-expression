@@ -16,6 +16,7 @@ describe('Extract expression', () => {
         deepEqual(extract('1.2.3'), [2, 5]);
         deepEqual(extract('foo2 * (3 + 1)'), [3, 14]);
         deepEqual(extract('bar.(2 * (3 + 1))'), [4, 17]);
+        deepEqual(extract('test: 1+2'), [6, 9]);
     });
 
     it('look-ahead', () => {
