@@ -195,7 +195,7 @@ function op2(value: number, priority = 0): Token {
 
 function error(name: string, scanner?: Scanner) {
     if (scanner) {
-        name += ` at column ${scanner.start} of expression`;
+        name += ` at column ${scanner.pos} of expression`;
     }
     throw new Error(name);
 }
