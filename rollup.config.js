@@ -3,6 +3,7 @@ import nodeResolve from 'rollup-plugin-node-resolve';
 
 export default {
     input: './src/index.ts',
+    external: ['@emmetio/scanner'],
     plugins: [nodeResolve(), typescript({
         tsconfigOverride: {
             compilerOptions: { module: 'esnext' }
