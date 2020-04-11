@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/emmetio/math-expression#readme",
   "dependencies": {
-    "@emmetio/scanner": "0.0.7"
+    "@emmetio/scanner": "^0.0.8"
   },
   "devDependencies": {
     "@types/mocha": "^7.0.2",
