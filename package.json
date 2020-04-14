@@ -1,6 +1,6 @@
 {
   "name": "@emmetio/math-expression",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Parse and evaluate simple math expressions",
   "main": "./dist/math.cjs.js",
   "module": "./dist/math.es.js",
