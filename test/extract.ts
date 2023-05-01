@@ -1,5 +1,5 @@
 import { deepStrictEqual as deepEqual } from 'assert';
-import extract from '../src/extract';
+import extract from '../src/extract.js';
 
 describe('Extract expression', () => {
     it('basic', () => {

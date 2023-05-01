@@ -1,5 +1,5 @@
 import { strictEqual as equal, throws } from 'assert';
-import evaluate from '../src';
+import evaluate from '../src/index.js';
 
 describe('Evaluator', () => {
     it('should evaluate basic math', () => {

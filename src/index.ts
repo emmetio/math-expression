@@ -1,7 +1,7 @@
-import Scanner from '@emmetio/scanner';
-import parse, { TokenType, Operator, Token } from './parser';
+import type Scanner from '@emmetio/scanner';
+import parse, { TokenType, Operator, Token } from './parser.js';
 
-export { default as extract, ExtractOptions } from './extract';
+export { default as extract, type ExtractOptions } from './extract.js';
 
 type UnaryAction = { [op in Operator]?: (n: number) => number };
 type BinaryAction = { [op in Operator]?: (n1: number, n2: number) => number };
@@ -61,4 +61,4 @@ export default function evaluate(expr: string | Scanner | Token[]): number | nul
     return nStack[0];
 }
 
-export { parse, Token };
+export { parse, type Token };

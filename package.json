@@ -2,16 +2,21 @@
   "name": "@emmetio/math-expression",
   "version": "1.0.4",
   "description": "Parse and evaluate simple math expressions",
-  "main": "./dist/math.cjs.js",
+  "main": "./dist/math.cjs",
   "module": "./dist/math.es.js",
   "types": "./dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    "import": "./dist/math.es.js",
+    "require": "./dist/math.cjs"
+  },
   "scripts": {
     "test": "mocha",
     "build": "rollup -c",
     "watch": "rollup -wc",
     "lint": "tslint ./src/*.ts",
-    "clean": "rm -rf ./dist",
-    "prepare": "npm test && npm run lint && npm run clean && npm run build"
+    "clean": "rimraf ./dist",
+    "prepare": "npm run clean && npm run build && npm run lint && npm run test"
   },
   "repository": {
     "type": "git",
@@ -30,21 +35,22 @@
   },
   "homepage": "https://github.com/emmetio/math-expression#readme",
   "dependencies": {
-    "@emmetio/scanner": "^1.0.0"
+    "@emmetio/scanner": "^1.0.2"
   },
   "devDependencies": {
-    "@types/mocha": "^7.0.2",
-    "@types/node": "^12.7.12",
-    "mocha": "^7.1.1",
-    "rollup": "^2.6.0",
-    "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-typescript2": "^0.27.0",
-    "ts-node": "^8.8.2",
+    "@rollup/plugin-node-resolve": "^15.0.2",
+    "@rollup/plugin-typescript": "^11.1.0",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^18.11.18",
+    "mocha": "^10.2.0",
+    "rimraf": "^5.0.0",
+    "rollup": "^3.21.2",
+    "ts-node": "^10.9.1",
     "tslint": "^6.1.1",
-    "typescript": "^3.8.3"
+    "typescript": "^4.9.4"
   },
   "mocha": {
-    "require": "ts-node/register",
+    "loader": "ts-node/esm",
     "spec": "./test/*.ts"
   }
 }

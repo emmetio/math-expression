@@ -1,4 +1,4 @@
-import { Operator, isSign, isOperator } from './parser';
+import { Operator, isSign, isOperator } from './parser.js';
 import { isSpace, isNumber } from '@emmetio/scanner';
 
 export interface ExtractOptions {
