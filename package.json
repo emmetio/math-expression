@@ -35,7 +35,7 @@
   "devDependencies": {
     "@types/mocha": "^7.0.2",
     "@types/node": "^12.7.12",
-    "mocha": "^7.1.1",
+    "mocha": "^10.2.0",
     "rollup": "^2.6.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-typescript2": "^0.27.0",
